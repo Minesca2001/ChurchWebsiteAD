@@ -29,6 +29,9 @@ header nav a:hover {
     color: #e3e3e3;
 }
 
+img {
+    border-radius: 20px;
+}
 /* Banner Styles */
 .banner {
     background: url('../img/portada.jpg') no-repeat center center/cover;
