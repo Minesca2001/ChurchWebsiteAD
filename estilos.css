@@ -1,0 +1,112 @@
+/* General Styles */
+body {
+    font-family: 'Times New Roman';
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Navigation Bar */
+header nav {
+    background: #4CAF50;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+    transition: background 0.3s, color 0.3s;
+}
+
+header nav a:hover {
+    background: #3e8e41;
+    border-radius: 5px;
+    color: #e3e3e3;
+}
+
+/* Banner Styles */
+.banner {
+    background: url('../img/portada.jpg') no-repeat center center/cover;
+    height: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Section Styles */
+section {
+    padding: 2rem 0;
+}
+
+section h2 {
+    color: #4CAF50;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Service Cards */
+.row .col-md-4 {
+    text-align: center;
+}
+
+/* Form Styles */
+form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+form button {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background: #45a049;
+}
+
+/* Footer Styles */
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+footer a {
+    color: #fff;
+    margin: 0 10px;
+}
+
+footer a:hover {
+    color: #4CAF50;
+}
