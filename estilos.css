@@ -29,8 +29,8 @@ header nav a:hover {
     color: #e3e3e3;
 }
 
-img {
-    border-radius: 20px;
+header .img {
+    border-radius: 100px;
 }
 /* Banner Styles */
 .banner {
