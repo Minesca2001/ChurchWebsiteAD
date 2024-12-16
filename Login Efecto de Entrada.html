@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login con Efecto de Entrada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Times New Roman', Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #282c34;
+            background-image: url('1.png');
+        }
+        .login-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 50px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .textbox {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 20px;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            outline: none;
+        }
+        input:focus {
+            border-bottom: 2px solid #007BFF;
+        }
+        label {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            transition: 0.3s;
+            color: #888;
+        }
+        input:focus + label,
+        input:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 0;
+            color: #007BFF;
+            font-size: 12px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            text-align: center;
+            display: block;
+            margin-top: 10px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <section id="section1">
+        <div class="login-box">
+            <h2>Iniciar Sesión</h2>
+            <form id="loginForm">
+                <div class="textbox">
+                    <input type="text" id="usuario" required placeholder=" ">
+                    <label>Usuario</label>
+                </div>
+                <div class="textbox">
+                    <input type="password" id="contraseña" required placeholder=" ">
+                    <label>Contraseña</label>
+                    <a href="javascript:void(0);" onclick="showRegisterSection()">Registrarse</a>
+                </div>
+                <button type="submit">Ingresar</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="section2" style="display:none;">
+        <div class="login-box">
+            <h2>Registrarse</h2>
+            <form id="registerForm">
+                <div class="textbox">
+                    <input type="text" id="usuario1" required placeholder=" ">
+                    <label>Usuario</label>
+                </div>
+                <div class="textbox">
+                    <input type="email" id="correo" required placeholder=" ">
+                    <label>Correo Electrónico</label>
+                </div>
+                <div class="textbox">
+                    <input type="password" id="contraseña1" required placeholder=" ">
+                    <label>Contraseña</label>
+                </div>
+                <button type="submit">Registrarse</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // Función para mostrar la sección de registro
+        function showRegisterSection() {
+            document.getElementById("section1").style.display = "none";
+            document.getElementById("section2").style.display = "block";
+        }
+
+        // Lógica para registrar usuarios en localStorage
+        document.getElementById("registerForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
+
+            const usuario = document.getElementById("usuario1").value;
+            const correo = document.getElementById("correo").value;
+            const contraseña = document.getElementById("contraseña1").value;
+
+            // Recuperar usuarios desde localStorage o crear una lista vacía si no existen
+            let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+            // Añadir el nuevo usuario al arreglo
+            usuarios.push({ usuario: usuario, contraseña: contraseña });
+
+            // Guardar los usuarios de nuevo en localStorage
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+            // Mostrar mensaje de éxito
+            alert(`Usuario registrado: ${usuario}\nCorreo: ${correo}`);
+
+            // Regresar a la sección de login después de registro
+            document.getElementById("section2").style.display = "none";
+            document.getElementById("section1").style.display = "block";
+        });
+
+        // Lógica para iniciar sesión usando los datos almacenados en localStorage
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
+
+            const usuario = document.getElementById("usuario").value;
+            const contraseña = document.getElementById("contraseña").value;
+
+            // Recuperar usuarios desde localStorage
+            let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+            // Buscar el usuario en el arreglo de usuarios
+            const usuarioValido = usuarios.find(user => user.usuario === usuario && user.contraseña === contraseña);
+
+            if (usuarioValido) {
+                // Redirigir a la siguiente página si la autenticación es exitosa
+                window.location.href = "pagina_protegida.html";
+            } else {
+                alert("Usuario o contraseña incorrectos.");
+            }
+        });
+    </script>
+</body>
+</html>
