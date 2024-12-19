@@ -18,6 +18,18 @@
             height: 100vh;
             background-color: #282c34;
             background-image: url('2.png');
+            animation: mover-fondo 10s linear infinite;
+            background-position: center;
+			background-size: cover;
+        }
+
+        @keyframes mover-fondo {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
         }
         .login-box {
             background-color: white;
