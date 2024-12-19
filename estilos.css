@@ -6,8 +6,8 @@ body {
     background-color: #f9f9f9;
     color: #333;
     line-height: 1.6;
-    background-image: url(Portada_2.jpeg);
-			animation: mover-fondo 10s linear infinite;
+    background-image: url(3.png);
+    animation: mover-fondo 10s linear infinite;
 }
 
 /* Navigation Bar */
