@@ -6,6 +6,8 @@ body {
     background-color: #f9f9f9;
     color: #333;
     line-height: 1.6;
+    background-image: url(Portada_2.jpeg);
+			animation: mover-fondo 10s linear infinite;
 }
 
 /* Navigation Bar */
@@ -113,3 +115,12 @@ footer a {
 footer a:hover {
     color: #4CAF50;
 }
+
+@keyframes mover-fondo {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 100% 100%;
+            }
+        }
