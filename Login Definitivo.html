@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login y Registro</title>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f4f8;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.7);
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .input-group label {
+            position: absolute;
+            top: 50%px;
+            left: 10px;
+			transform: translateY(-50%);
+    background-color: white;
+    padding: 0 5px;
+            color: #666;
+            font-size: 14px;
+            pointer-events: none;
+            transition: 0.3s ease;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 10px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+        .input-group input:focus {
+            border-color: #007BFF;
+        }
+		
+		.input-group input:focus + label {
+			transform: translateY(-50%) scale(0.85);
+            top: -0px;
+            background-color: #fff;
+            color: #007BFF;
+		}
+		
+		.input-group input:not(:placeholder-shown) + label {
+            transform: translateY(-50%) scale(0.85);
+            top: 0px;
+            background-color: #fff;
+			font-size: 12px;
+			
+			
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            display: none;
+        }
+        .toggle-section {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .toggle-section a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .toggle-section a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" role="form" aria-labelledby="loginTitle">
+        <div id="login-section">
+            <h2 id="loginTitle">Iniciar Sesión</h2>
+            <form id="loginForm">
+                <div class="input-group">
+					<input type="text" id="login-username" required placeholder=" ">
+                    <label for="login-username">Usuario</label>
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" required placeholder=" " aria-label="Contraseña">
+                </div>
+                <p class="error-message" id="loginErrorMessage" role="alert">Usuario o contraseña incorrectos></p>
+                <button type="submit" class="btn" aria-label="Iniciar sesión">Ingresar</button>
+            </form>
+            <div class="toggle-section">
+                <p>¿No tienes una cuenta? <a href="#" id="show-register">Regístrate</a></p>
+            </div>
+        </div>
+
+        <div id="register-section" style="display: none;">
+            <h2>Registrarse</h2>
+            <form id="registerForm">
+                <div class="input-group">
+                    <label for="register-username">Usuario</label>
+                    <input type="text" id="register-username" required placeholder=" ">
+                </div>
+				<div class="input-group">
+					<input type="email" id="login-username" required placeholder=" ">
+                    <label for="login-username">Correo Electronico</label>
+                </div>
+                <div class="input-group">
+                    <label for="register-password">Contraseña</label>
+                    <input type="password" id="register-password" required placeholder=" ">
+                </div>
+				<div class="input-group">
+                    <label for="register-password"> Confirmar Contraseña</label>
+                    <input type="password" id="register-password" required placeholder=" ">
+                </div>
+                <p class="error-message" id="registerErrorMessage"></p>
+                <button type="submit" class="btn">Registrarse</button>
+            </form>
+            <div class="toggle-section">
+                <p>¿Ya tienes una cuenta? <a href="#" id="show-login">Inicia sesión</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginSection = document.getElementById('login-section');
+        const registerSection = document.getElementById('register-section');
+        const showRegister = document.getElementById('show-register');
+        const showLogin = document.getElementById('show-login');
+
+        // Mostrar sección de registro
+        showRegister.addEventListener('click', () => {
+            loginSection.style.display = 'none';
+            registerSection.style.display = 'block';
+        });
+
+        // Mostrar sección de inicio de sesión
+        showLogin.addEventListener('click', () => {
+            registerSection.style.display = 'none';
+            loginSection.style.display = 'block';
+        });
+
+        // Registro
+        const registerForm = document.getElementById('registerForm');
+        const registerErrorMessage = document.getElementById('registerErrorMessage');
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value;
+
+            if (!username || !password) {
+                registerErrorMessage.textContent = 'Por favor, complete todos los campos.';
+                registerErrorMessage.style.display = 'block';
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.some(user => user.username === username)) {
+                registerErrorMessage.textContent = 'El usuario ya existe.';
+                registerErrorMessage.style.display = 'block';
+                return;
+            }
+
+            const hashedPassword = CryptoJS.SHA256(password).toString();
+            users.push({ username, password: hashedPassword });
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Registro exitoso. Ahora puedes iniciar sesión.');
+            showLogin.click();
+        });
+
+        // Inicio de sesión
+        const loginForm = document.getElementById('loginForm');
+        const loginErrorMessage = document.getElementById('loginErrorMessage');
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(user => user.username === username);
+            const hashedPassword = CryptoJS.SHA256(password).toString();
+
+            if (user && user.password === hashedPassword) {
+                alert('Inicio de sesión exitoso.');
+                loginErrorMessage.style.display = 'none';
+            } else {
+                loginErrorMessage.textContent = 'Usuario o contraseña incorrectos.';
+                loginErrorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
