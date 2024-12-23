@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <link rel="stylesheet" href="styleds.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Times New Roman, Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+        
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 50px;
+            box-shadow: 0 0px 8px rgba(0, 0, 0, 0.8);
+            width: 400px;
+            text-align: center;
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .input-group label {
+            position: absolute;
+            top: 0;
+            left: 10px;
+            transform: translateY(50%);
+            background-color: white;
+            padding: 0 5px;
+            color: #666;
+            font-size: 14px;
+            pointer-events: none;
+            transition: 0.3s ease;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 10px;
+            border: 2px solid #ddd;
+            border-radius: 80px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+        .input-group input:focus {
+            border-color: #007BFF;
+        }
+        .input-group input:focus + label {
+            transform: translateY(-50%) scale(0.85);
+            top: -0px;
+            background-color: #fff;
+            color: #007BFF;
+        }
+        .input-group input:not(:placeholder-shown) + label {
+            transform: translateY(-50%) scale(0.85);
+            top: 0px;
+            background-color: #fff;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        /* Ocultar el encabezado en la sección de registro */
+        #loginHeader {
+            display: block;
+        }
+
+        .register-header {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Encabezado solo para la sección de login -->
+        <h2 id="loginHeader">Iniciar Sesión</h2>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="usuario" required placeholder=" ">
+                <label for="usuario">Usuario</label>
+            </div>
+            <div class="input-group">
+                <input type="password" id="clave" required placeholder=" ">
+                <label for="clave">Contraseña</label>
+            </div>
+            <button id="loginBtn" type="submit">Acceder</button>
+            <p id="error-message"></p>
+            <p><a href="#" onclick="showRegisterSection()">¿No tienes cuenta? Regístrate aquí.</a></p>
+        </form>
+
+        <!-- Formulario de Registro -->
+        <div class="form-section" id="registerSection">
+            <!-- Encabezado solo para la sección de registro -->
+            <h2 class="register-header">Registrarse</h2>
+            <form id="registerForm">
+                <div class="input-group">
+                    <input type="text" id="usuario1" required placeholder=" ">
+                    <label for="usuario1">Usuario</label>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="correo" required placeholder=" ">
+                    <label for="correo">Correo Electrónico</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="contraseña1" required placeholder=" ">
+                    <label for="contraseña1">Contraseña</label>
+                </div>
+                <button id="registerBtn" type="submit">Registrar</button>
+                <p id="registerErrorMessage" style="color:red;"></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar la sección de registro
+        function showRegisterSection() {
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("loginHeader").style.display = "none";  // Ocultar encabezado de login
+            document.getElementById("registerSection").style.display = "block";
+            document.querySelector(".register-header").style.display = "block";  // Mostrar encabezado de registro
+        }
+
+        // Función para mostrar la sección de inicio de sesión
+        function showLoginSection() {
+            document.getElementById("loginForm").style.display = "block";
+            document.getElementById("loginHeader").style.display = "block";  // Mostrar encabezado de login
+            document.getElementById("registerSection").style.display = "none";
+            document.querySelector(".register-header").style.display = "none";  // Ocultar encabezado de registro
+        }
+
+        // Función para calcular el hash de la contraseña
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(hash))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+        }
+
+        // Función de validación de correo electrónico
+        function validarCorreo(correo) {
+            const patronCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return patronCorreo.test(correo);
+        }
+
+        // Lógica de registro mejorada con validación de campos
+        document.getElementById("registerForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Evitar que el formulario se envíe de manera tradicional
+
+            const usuario = document.getElementById("usuario1").value.trim();
+            const correo = document.getElementById("correo").value.trim();
+            const contraseña = document.getElementById("contraseña1").value.trim();
+
+            // Validación de campos vacíos
+            if (!usuario || !correo || !contraseña) {
+                document.getElementById("registerErrorMessage").textContent = "Todos los campos son obligatorios.";
+                return;
+            }
+
+            // Validación de formato de correo
+            if (!validarCorreo(correo)) {
+                document.getElementById("registerErrorMessage").textContent = "Por favor, ingresa un correo electrónico válido.";
+                return;
+            }
+
+            // Calcular el hash de la contraseña
+            const contraseñaHash = await hashPassword(contraseña);
+
+            // Obtener usuarios de localStorage
+            let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+            // Verificar si el usuario ya existe
+            if (usuarios.some(user => user.usuario === usuario)) {
+                document.getElementById("registerErrorMessage").textContent = "El usuario ya existe. Por favor, elige otro nombre.";
+                return;
+            }
+
+            // Registrar el nuevo usuario
+            usuarios.push({ usuario, correo, contraseña: contraseñaHash });
+            localStorage.setItem('usuarios', JSON.stringify(usuarios));
+
+            alert("Usuario registrado con éxito.");
+            showLoginSection(); // Regresar al formulario de login
+        });
+
+        // Lógica de inicio de sesión
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Evitar recarga de la página
+
+            const usuario = document.getElementById("usuario").value.trim();
+            const contraseña = await hashPassword(document.getElementById("clave").value.trim());
+
+            let usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+            const usuarioEncontrado = usuarios.find(user => user.usuario === usuario && user.contraseña === contraseña);
+
+            if (usuarioEncontrado) {
+                alert("Inicio de sesión exitoso.");
+                window.location.href = "index.html"; // Redirigir a página protegida
+            } else {
+                document.getElementById("error-message").textContent = "Usuario o contraseña incorrectos.";
+            }
+        });
+    </script>
+</body>
+</html>
