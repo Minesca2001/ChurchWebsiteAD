@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditorio Iglesia</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    width: 90%;
+    max-width: 800px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-section {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.auditorium {
+    display: grid;
+    grid-template-columns: repeat(10, 50px);
+    gap: 5px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.seat {
+    width: 40px;
+    height: 30px;
+    border: 1px solid #ccc;
+    background-color: lightgreen;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.seat.occupied {
+    background-color: red;
+    color: white;
+    cursor: not-allowed;
+}
+
+    </style>
+    <div class="container">
+        <h1>Sistema de Asignación de Asientos - Iglesia</h1>
+        <div class="form-section">
+            <button id="fillRow">Llenar una fila</button>
+            <button id="fillColumn">Llenar una columna</button>
+            <button id="resetSeats">Reiniciar Asientos</button>
+            <p>Total ocupados: <span id="occupiedCount">0</span> | Total disponibles: <span id="availableCount">100</span></p>
+        </div>
+        <div id="auditorium" class="auditorium"></div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        const auditorium = document.getElementById("auditorium");
+const occupiedCount = document.getElementById("occupiedCount");
+const availableCount = document.getElementById("availableCount");
+
+const rows = 10; // Número de filas
+const cols = 10; // Número de columnas
+let totalSeats = rows * cols;
+let occupiedSeats = 0;
+
+// Crear los asientos
+function createSeats() {
+    auditorium.innerHTML = ""; // Limpia cualquier contenido previo
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            const seat = document.createElement("div");
+            seat.classList.add("seat");
+            seat.dataset.row = i;
+            seat.dataset.col = j;
+            seat.addEventListener("click", toggleSeat);
+            auditorium.appendChild(seat);
+        }
+    }
+    updateCounts();
+}
+
+// Alternar el estado de un asiento
+function toggleSeat(event) {
+    const seat = event.target;
+    if (seat.classList.contains("occupied")) {
+        seat.classList.remove("occupied");
+        occupiedSeats--;
+    } else {
+        seat.classList.add("occupied");
+        occupiedSeats++;
+    }
+    updateCounts();
+}
+
+// Llenar una fila completa
+function fillRow() {
+    const rowIndex = prompt(`Ingrese el número de la fila (1-${rows}):`);
+    if (!rowIndex || rowIndex < 1 || rowIndex > rows) {
+        alert("Fila no válida.");
+        return;
+    }
+    const rowSeats = [...auditorium.children].filter(seat => seat.dataset.row == rowIndex - 1);
+    rowSeats.forEach(seat => {
+        if (!seat.classList.contains("occupied")) {
+            seat.classList.add("occupied");
+            occupiedSeats++;
+        }
+    });
+    updateCounts();
+}
+
+// Llenar una columna completa
+function fillColumn() {
+    const colIndex = prompt(`Ingrese el número de la columna (1-${cols}):`);
+    if (!colIndex || colIndex < 1 || colIndex > cols) {
+        alert("Columna no válida.");
+        return;
+    }
+    const colSeats = [...auditorium.children].filter(seat => seat.dataset.col == colIndex - 1);
+    colSeats.forEach(seat => {
+        if (!seat.classList.contains("occupied")) {
+            seat.classList.add("occupied");
+            occupiedSeats++;
+        }
+    });
+    updateCounts();
+}
+
+// Reiniciar todos los asientos
+function resetSeats() {
+    occupiedSeats = 0;
+    auditorium.querySelectorAll(".seat").forEach(seat => seat.classList.remove("occupied"));
+    updateCounts();
+}
+
+// Actualizar los contadores de ocupación
+function updateCounts() {
+    occupiedCount.textContent = occupiedSeats;
+    availableCount.textContent = totalSeats - occupiedSeats;
+}
+
+// Eventos de los botones
+document.getElementById("fillRow").addEventListener("click", fillRow);
+document.getElementById("fillColumn").addEventListener("click", fillColumn);
+document.getElementById("resetSeats").addEventListener("click", resetSeats);
+
+// Inicializar
+createSeats();
+
+    </script>
+</body>
+</html>
