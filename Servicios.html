@@ -4,31 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Horarios y detalles de los servicios ofrecidos en nuestra iglesia.">
-    <title>Servicios - Iglesia</title>
-    <link rel="stylesheet" href="estilos.css">
+    <title>Auditorio Iglesia</title>
+    <link rel="stylesheet" href="css/estilos.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-<style>
-/* Archivo CSS para la página de la Iglesia */
-
-/* General */
-body {
-    font-family: 'Times New Roman', Times, serif;
-}
-</style>
     <!-- Navegación -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <img src="logo.jpg" alt="Logo Iglesia" width="70"> Iglesia Asamblea de Dios "El Puerto"
+                <img src="img/logo.jpg" alt="Logo Iglesia" width="50"> Iglesia Asamblea de Dios El Puerto
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="Inicio.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="iglesia web.html">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link" href="Sobre Nosotros.html">Sobre Nosotros</a></li>
                     <li class="nav-item"><a class="nav-link active" href="Servicios.html">Servicios</a></li>
                     <li class="nav-item"><a class="nav-link" href="Eventos.html">Eventos</a></li>
@@ -36,7 +28,6 @@ body {
                     <li class="nav-item"><a class="nav-link" href="Donaciones.html">Donaciones</a></li>
                     <li class="nav-item"><a class="nav-link" href="Miembros.html">Miembros</a></li>
                     <li class="nav-item"><a class="nav-link" href="Contacto.html">Contacto</a></li>
-                    <li class="nav-item"><a class="nav-link" href="index.html">Login</a></li>
                 </ul>
             </div>
         </div>
@@ -45,29 +36,191 @@ body {
     <!-- Contenido -->
     <header class="py-5 text-center bg-primary text-white">
         <div class="container">
-            <h1>Servicios</h1>
+            <h1>Sistema de Asignación de Asientos</h1>
             <p>Explora nuestros horarios y servicios disponibles.</p>
         </div>
     </header>
+<body>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
+h1 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-section {
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.container {
+    justify-content: center;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.auditorium {
+    display: grid;
+    grid-template-columns: repeat(10, 50px);
+    gap: 5px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.seat {
+    width: 40px;
+    height: 20px;
+    border: 1px solid #ccc;
+    background-color: lightgreen;
+    text-align: center;
+    line-height: 50px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.seat.occupied {
+    background-color: red;
+    color: white;
+    cursor: not-allowed;
+}
+
+    </style>
     <section class="py-5">
-        <div class="container">
-            <h2 class="text-center mb-4">Horarios de Servicios</h2>
-            <ul class="list-group">
-                <li class="list-group-item">Domingo: Servicio General - 10:00 AM</li>
-                <li class="list-group-item">Miércoles: Estudio Bíblico - 7:00 PM</li>
-                <li class="list-group-item">Viernes: Reunión de Jóvenes - 6:00 PM</li>
-            </ul>
+    <div class="container">
+        <div class="form-section">
+            <button id="fillRow">Llenar una fila</button>
+            <button id="fillColumn">Llenar una columna</button>
+            <button id="resetSeats">Reiniciar Asientos</button>
+            <p>Total ocupados: <span id="occupiedCount">0</span> | Total disponibles: <span id="availableCount">100</span></p>
         </div>
+        <div id="auditorium" class="auditorium"></div>
+    </div>
     </section>
 
     <!-- Pie de página -->
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
-            <p>&copy; 2024 Iglesia Asamblea de Dios "El Puerto". Todos los derechos reservados.</p>
+            <p>&copy; 2024 Iglesia. Todos los derechos reservados.</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="script.js"></script>
+    <script>
+        const auditorium = document.getElementById("auditorium");
+const occupiedCount = document.getElementById("occupiedCount");
+const availableCount = document.getElementById("availableCount");
+
+const rows = 30; // Número de filas
+const cols = 10; // Número de columnas
+let totalSeats = rows * cols;
+let occupiedSeats = 0;
+
+// Crear los asientos
+function createSeats() {
+    auditorium.innerHTML = ""; // Limpia cualquier contenido previo
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            const seat = document.createElement("div");
+            seat.classList.add("seat");
+            seat.dataset.row = i;
+            seat.dataset.col = j;
+            seat.addEventListener("click", toggleSeat);
+            auditorium.appendChild(seat);
+        }
+    }
+    updateCounts();
+}
+
+// Alternar el estado de un asiento
+function toggleSeat(event) {
+    const seat = event.target;
+    if (seat.classList.contains("occupied")) {
+        seat.classList.remove("occupied");
+        occupiedSeats--;
+    } else {
+        seat.classList.add("occupied");
+        occupiedSeats++;
+    }
+    updateCounts();
+}
+
+// Llenar una fila completa
+function fillRow() {
+    const rowIndex = prompt(`Ingrese el número de la fila (1-${rows}):`);
+    if (!rowIndex || rowIndex < 1 || rowIndex > rows) {
+        alert("Fila no válida.");
+        return;
+    }
+    const rowSeats = [...auditorium.children].filter(seat => seat.dataset.row == rowIndex - 1);
+    rowSeats.forEach(seat => {
+        if (!seat.classList.contains("occupied")) {
+            seat.classList.add("occupied");
+            occupiedSeats++;
+        }
+    });
+    updateCounts();
+}
+
+// Llenar una columna completa
+function fillColumn() {
+    const colIndex = prompt(`Ingrese el número de la columna (1-${cols}):`);
+    if (!colIndex || colIndex < 1 || colIndex > cols) {
+        alert("Columna no válida.");
+        return;
+    }
+    const colSeats = [...auditorium.children].filter(seat => seat.dataset.col == colIndex - 1);
+    colSeats.forEach(seat => {
+        if (!seat.classList.contains("occupied")) {
+            seat.classList.add("occupied");
+            occupiedSeats++;
+        }
+    });
+    updateCounts();
+}
+
+// Reiniciar todos los asientos
+function resetSeats() {
+    occupiedSeats = 0;
+    auditorium.querySelectorAll(".seat").forEach(seat => seat.classList.remove("occupied"));
+    updateCounts();
+}
+
+// Actualizar los contadores de ocupación
+function updateCounts() {
+    occupiedCount.textContent = occupiedSeats;
+    availableCount.textContent = totalSeats - occupiedSeats;
+}
+
+// Eventos de los botones
+document.getElementById("fillRow").addEventListener("click", fillRow);
+document.getElementById("fillColumn").addEventListener("click", fillColumn);
+document.getElementById("resetSeats").addEventListener("click", resetSeats);
+
+// Inicializar
+createSeats();
+
+    </script>
 </body>
 </html>
